@@ -1,0 +1,23 @@
+#!/bin/bash
+#LL
+# Informations de connexion FTP sécurisé
+ftp_host="10.10.25.209"
+ftp_username="asterisk"
+ftp_password="asterisk"
+
+fichier_compress = "asterisk.tar.gz" 
+#_$(date +'%Y%m%d_%H%M')tar.gz"
+
+tar -czvf asterisk.tar.gz /etc/asterisk/*
+clear
+# Se connecter au serveur FTP sécurisé et transférer le fichier compressé
+
+lftp -u $ftp_username,$ftp_password -p 21 $ftp_host <<EOF
+set ftp:ssl-force true
+set ftp:ssl-protect-data true
+set ftp:ssl-protect-list true
+set ssl:verify-certificate no
+cd .
+put asterisk.tar.gz
+quit
+EOF
